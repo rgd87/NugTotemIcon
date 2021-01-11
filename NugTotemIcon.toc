@@ -1,3 +1,5 @@
-## Interface: 90000
+## Interface: 90002
 ## Title: NugTotemIcon
+## Author: d87
+## Version: @project-version@
 core.lua
