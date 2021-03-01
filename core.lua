@@ -1,10 +1,17 @@
 local f = CreateFrame("Frame", nil, UIParent)
 f:RegisterEvent("NAME_PLATE_UNIT_ADDED")
 f:RegisterEvent("NAME_PLATE_UNIT_REMOVED")
+f:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
 
 f:SetScript("OnEvent", function(self, event, ...)
     return self[event](self, event, ...)
 end)
+
+local showDuration = true
+local showCooldownCount = false
+
+local activeTotems = {}
+local totemStartTimes = setmetatable({ __mode = "V" }, {})
 
 -- nameplateShowEnemyGuardians = "0",
 -- nameplateShowEnemyMinions   = "0",
@@ -12,8 +19,7 @@ end)
 -- nameplateShowEnemyPets      = "1",
 -- nameplateShowEnemyTotems    = "1",
 
-local function GetUnitNPCID(unit)
-    local guid = UnitGUID(unit)
+local function GetNPCIDByGUID(guid)
     local _, _, _, _, _, npcID = strsplit("-", guid);
     return tonumber(npcID)
 end
@@ -55,6 +61,16 @@ local function CreateIcon(nameplate)
     bg:SetPoint("TOPLEFT", frame, "TOPLEFT", -2, 2)
     bg:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", 2, -2)
 
+    local cd = CreateFrame("Cooldown", nil, frame, "CooldownFrameTemplate")
+    if not showCooldownCount then
+        cd.noCooldownCount = true -- disable OmniCC for this cooldown
+        cd:SetHideCountdownNumbers(true)
+    end
+    cd:SetReverse(true)
+    cd:SetDrawEdge(false)
+    cd:SetAllPoints(frame)
+
+    frame.cooldown = cd
     frame.icon = icon
     frame.bg = bg
 
@@ -63,7 +79,8 @@ end
 
 function f.NAME_PLATE_UNIT_ADDED(self, event, unit)
     local np = C_NamePlate.GetNamePlateForUnit(unit)
-    local npcID = GetUnitNPCID(unit)
+    local guid = UnitGUID(unit)
+    local npcID = GetNPCIDByGUID(guid)
 
     if npcID and totemNpcIDs[npcID] then
         if not np.NugTotemIcon then
@@ -79,6 +96,13 @@ function f.NAME_PLATE_UNIT_ADDED(self, event, unit)
         local tex = GetSpellTexture(spellID)
 
         iconFrame.icon:SetTexture(tex)
+        local startTime = totemStartTimes[guid]
+        if startTime and showDuration then
+            iconFrame.cooldown:SetCooldown(startTime, duration)
+            iconFrame.cooldown:Show()
+        end
+
+        activeTotems[guid] = np
     end
 end
 
@@ -86,5 +110,21 @@ function f.NAME_PLATE_UNIT_REMOVED(self, event, unit)
     local np = C_NamePlate.GetNamePlateForUnit(unit)
     if np.NugTotemIcon then
         np.NugTotemIcon:Hide()
+
+        local guid = UnitGUID(unit)
+        activeTotems[guid] = nil
+    end
+end
+
+function f:COMBAT_LOG_EVENT_UNFILTERED(event, unit)
+    local timestamp, eventType, hideCaster,
+    srcGUID, srcName, srcFlags, srcFlags2,
+    dstGUID, dstName, dstFlags, dstFlags2 = CombatLogGetCurrentEventInfo()
+
+    if eventType == "SPELL_SUMMON" then
+        local npcID = GetNPCIDByGUID(dstGUID)
+        if npcID and totemNpcIDs[npcID] then
+            totemStartTimes[dstGUID] = GetTime()
+        end
     end
 end
