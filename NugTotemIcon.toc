@@ -2,4 +2,7 @@
 ## Title: NugTotemIcon
 ## Author: d87
 ## Version: @project-version@
+
+## X-Curse-Project-ID: 439883
+
 core.lua
