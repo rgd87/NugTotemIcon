@@ -9,6 +9,7 @@ end)
 
 local showDuration = true
 local showCooldownCount = false
+local showFriendlyTotems = false
 
 local activeTotems = {}
 local totemStartTimes = setmetatable({ __mode = "V" }, {})
@@ -83,6 +84,12 @@ function f.NAME_PLATE_UNIT_ADDED(self, event, unit)
     local npcID = GetNPCIDByGUID(guid)
 
     if npcID and totemNpcIDs[npcID] then
+        if not showFriendlyTotems then
+            -- local isAttackable = UnitCanAttack("player", unit)
+            local isFriendly = UnitReaction(unit, "player") >= 4
+            if isFriendly then return end
+        end
+
         if not np.NugTotemIcon then
             np.NugTotemIcon = CreateIcon(np)
         end

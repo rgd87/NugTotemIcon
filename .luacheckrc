@@ -131,4 +131,5 @@ globals = {
     "CreateTexturePool",
     "C_NamePlate",
     "GetSpellTexture",
+    "UnitReaction",
 }
