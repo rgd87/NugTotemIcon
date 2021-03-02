@@ -12,7 +12,7 @@ local showCooldownCount = false
 local showFriendlyTotems = false
 
 local activeTotems = {}
-local totemStartTimes = setmetatable({ __mode = "V" }, {})
+local totemStartTimes = setmetatable({ __mode = "v" }, {})
 
 -- nameplateShowEnemyGuardians = "0",
 -- nameplateShowEnemyMinions   = "0",
