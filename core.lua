@@ -82,7 +82,7 @@ elseif APILevel <= 2 then
     addTotem({ 8184, 120 }, 5927, 7424, 7425, 15487) -- Fire Resistance Totem
     addTotem({ 8227, 120 }, 5950, 6012, 7423, 10557, 15485) -- Flametongue Totem
     addTotem({ 8181, 120 }, 5926, 7412, 7413, 15486) -- Frost Resistance Totem
-    addTotem({ 8835, 120 }, 8835, 10627, 25359) -- Grace of Air Totem
+    addTotem({ 8835, 120 }, 7486, 7487, 15463) -- Grace of Air Totem
     addTotem({ 10595, 120 }, 7467, 7468, 7469, 15490) -- Nature Resistance Totem
     addTotem({ 8071, 120 }, 5873, 5919, 5920, 7366, 7367, 7368, 15470, 15474) -- Stoneskin Totem
     addTotem({ 31634, 300 }, 5874, 5921, 5922, 7403, 15464, 15479) -- Strength of Earth
