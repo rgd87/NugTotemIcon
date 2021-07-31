@@ -47,6 +47,7 @@ if APILevel >= 8 then
         [105451] = { 204331, 15 }, -- Counterstrike
         [104818] = { 207399, 30 }, -- Ancestral
         [105427] = { 204330, 15 }, -- Skyfury
+        [179867] = { 355580, 6 }, -- Static Field
 
         -- Warrior
         [119052] = { 236320, 15 }, -- War Banner
