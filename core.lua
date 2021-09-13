@@ -51,6 +51,9 @@ if APILevel >= 8 then
 
         -- Warrior
         [119052] = { 236320, 15 }, -- War Banner
+
+        --Priest
+        [101398] = { 211522, 12 }, -- Psyfiend
     }
 elseif APILevel <= 2 then
     totemNpcIDs = {
