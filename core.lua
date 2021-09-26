@@ -33,6 +33,7 @@ if APILevel >= 8 then
     totemNpcIDs = {
         -- [npcID] = { spellID, duration }
         [2630] = { 2484, 20 }, -- Earthbind
+        [60561] = { 51485, 20 }, -- Earthgrab
         [3527] = { 5394, 15 }, -- Healing Stream
         [6112] = { 8512, 120 }, -- Windfury
         [97369] = { 192222, 15 }, -- Liquid Magma
