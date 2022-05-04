@@ -49,6 +49,7 @@ if APILevel >= 8 then
         [104818] = { 207399, 30 }, -- Ancestral
         [105427] = { 204330, 15 }, -- Skyfury
         [179867] = { 355580, 6 }, -- Static Field
+        [166523] = { 324386, 30 }, -- Vesper Totem (Kyrian)
 
         -- Warrior
         [119052] = { 236320, 15 }, -- War Banner
