@@ -1,4 +1,4 @@
-## Interface: 11307
+## Interface: 11401
 ## Title: NugTotemIcon
 ## Author: d87
 ## Version: @project-version@
