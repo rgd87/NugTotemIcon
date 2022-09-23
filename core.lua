@@ -1,18 +1,27 @@
+local addonName, ns = ...
+
 local f = CreateFrame("Frame", nil, UIParent)
 f:RegisterEvent("NAME_PLATE_UNIT_ADDED")
 f:RegisterEvent("NAME_PLATE_UNIT_REMOVED")
 f:RegisterEvent("COMBAT_LOG_EVENT_UNFILTERED")
+f:RegisterEvent("PLAYER_LOGIN")
 
 f:SetScript("OnEvent", function(self, event, ...)
     return self[event](self, event, ...)
 end)
 
-local showDuration = true
-local showCooldownCount = false
-local showFriendlyTotems = true
 
 local activeTotems = {}
 local totemStartTimes = setmetatable({ __mode = "v" }, {})
+
+local defaults = {
+    showDuration = true,
+    showCooldownCount = false,
+    showFriendlyTotems = true,
+    size = 63,
+}
+
+local db
 
 -- /script SetCVar("nameplateShowFriendlyTotems", 1)
 
@@ -22,6 +31,19 @@ local totemStartTimes = setmetatable({ __mode = "v" }, {})
 -- nameplateShowEnemyTotems    = "1",
 -- nameplateShowEnemyPets      = "1",
 local APILevel = math.floor(select(4,GetBuildInfo())/10000)
+
+function f.PLAYER_LOGIN(self)
+    _G.NugTotemIconDB = _G.NugTotemIconDB or {}
+    -- self:DoMigrations(NugTotemIconDB)
+    -- self.db = LibStub("AceDB-3.0"):New("NugTotemIconDB", defaults, "Default")
+    db = _G.NugTotemIconDB
+    ns.SetupDefaults(_G.NugTotemIconDB, defaults)
+
+    SLASH_NUGTOTEMICON1= "/nugtotemicon"
+    SLASH_NUGTOTEMICON2= "/nti"
+    SlashCmdList["NUGTOTEMICON"] = self.SlashCmd
+end
+
 
 local function GetNPCIDByGUID(guid)
     local _, _, _, _, _, npcID = strsplit("-", guid);
@@ -134,7 +156,7 @@ end
 
 local function CreateIcon(nameplate)
     local frame = CreateFrame("Frame", nil, nameplate)
-    frame:SetSize(63, 63)
+    frame:SetSize(db.size, db.size)
     frame:SetPoint("BOTTOM", nameplate, "TOP", 0, 5)
 
     local icon = frame:CreateTexture(nil, "ARTWORK")
@@ -148,7 +170,7 @@ local function CreateIcon(nameplate)
     bg:SetPoint("BOTTOMRIGHT", frame, "BOTTOMRIGHT", 2, -2)
 
     local cd = CreateFrame("Cooldown", nil, frame, "CooldownFrameTemplate")
-    if not showCooldownCount then
+    if not db.showCooldownCount then
         cd.noCooldownCount = true -- disable OmniCC for this cooldown
         cd:SetHideCountdownNumbers(true)
     end
@@ -169,7 +191,7 @@ function f.NAME_PLATE_UNIT_ADDED(self, event, unit)
     local npcID = GetNPCIDByGUID(guid)
 
     if npcID and totemNpcIDs[npcID] then
-        if not showFriendlyTotems then
+        if not db.showFriendlyTotems then
             -- local isAttackable = UnitCanAttack("player", unit)
             local isFriendly = UnitReaction(unit, "player") >= 4
             if isFriendly then return end
@@ -181,6 +203,7 @@ function f.NAME_PLATE_UNIT_ADDED(self, event, unit)
 
         local iconFrame = np.NugTotemIcon
         iconFrame:Show()
+        iconFrame:SetSize(db.size, db.size)
 
         local totemData = totemNpcIDs[npcID]
         local spellID, duration = unpack(totemData)
@@ -189,7 +212,7 @@ function f.NAME_PLATE_UNIT_ADDED(self, event, unit)
 
         iconFrame.icon:SetTexture(tex)
         local startTime = totemStartTimes[guid]
-        if startTime and showDuration then
+        if startTime and db.showDuration then
             iconFrame.cooldown:SetCooldown(startTime, duration)
             iconFrame.cooldown:Show()
         end
@@ -219,4 +242,87 @@ function f:COMBAT_LOG_EVENT_UNFILTERED(event, unit)
             totemStartTimes[dstGUID] = GetTime()
         end
     end
+end
+
+
+local ParseOpts = function(str)
+    local t = {}
+    local capture = function(k,v)
+        t[k:lower()] = tonumber(v) or v
+        return ""
+    end
+    str:gsub("(%w+)%s*=%s*%[%[(.-)%]%]", capture):gsub("(%w+)%s*=%s*(%S+)", capture)
+    return t
+end
+
+f.Commands = {
+    ["duration"] = function(v)
+        db.showDuration = not db.showDuration
+    end,
+    ["cooldowncount"] = function(v)
+        db.showCooldownCount = not db.showCooldownCount
+    end,
+    ["friendly"] = function(v)
+        db.showFriendlyTotems = not db.showFriendlyTotems
+    end,
+    ["size"] = function(v)
+        local newSize = tonumber(v)
+        if newSize then
+            db.size = newSize
+        end
+    end,
+}
+
+function f.SlashCmd(msg)
+    local helpMessage = {
+        "|cff00ffbb/nti duration|r",
+        "|cff00ffbb/nti cooldowncount|r",
+        "|cff00ffbb/nti friendly|r",
+        "|cff00ffbb/nti size 63|r",
+    }
+
+    local k,v = string.match(msg, "([%w%+%-%=]+) ?(.*)")
+    if not k or k == "help" then
+        print("Usage:")
+        for k,v in ipairs(helpMessage) do
+            print(" - ",v)
+        end
+    end
+    if f.Commands[k] then
+        f.Commands[k](v)
+    end
+end
+
+
+
+function ns.SetupDefaults(t, defaults)
+    if not defaults then return end
+    for k,v in pairs(defaults) do
+        if type(v) == "table" then
+            if t[k] == nil then
+                t[k] = CopyTable(v)
+            elseif t[k] == false then
+                t[k] = false --pass
+            else
+                ns.SetupDefaults(t[k], v)
+            end
+        else
+            if t[k] == nil then t[k] = v end
+        end
+    end
+end
+
+function ns.RemoveDefaults(t, defaults)
+    if not defaults then return end
+    for k, v in pairs(defaults) do
+        if type(t[k]) == 'table' and type(v) == 'table' then
+            ns.RemoveDefaults(t[k], v)
+            if next(t[k]) == nil then
+                t[k] = nil
+            end
+        elseif t[k] == v then
+            t[k] = nil
+        end
+    end
+    return t
 end

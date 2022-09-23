@@ -2,6 +2,7 @@
 ## Title: NugTotemIcon
 ## Author: d87
 ## Version: @project-version@
+## SavedVariables: NugTotemIconDB
 
 ## X-Curse-Project-ID: 439883
 
