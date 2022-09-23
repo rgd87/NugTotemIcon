@@ -68,6 +68,7 @@ elseif APILevel == 3 then
         [15447] = { 3738, 120 }, -- Wrath of Air Totem
         [5913] = { 8143, 300 }, -- Tremor
         [10467] = { 16190, 12 }, -- Mana Tide Totem
+        [5924] = { 54968, 300 } -- Cleansing Totem
     }
     local function addTotem(data, ...)
         local numArgs = select("#",...)
