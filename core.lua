@@ -19,6 +19,7 @@ local defaults = {
     showCooldownCount = false,
     showFriendlyTotems = true,
     size = 63,
+    nameplateOffsetY = 0,
 }
 
 local db
@@ -163,7 +164,7 @@ end
 local function CreateIcon(nameplate)
     local frame = CreateFrame("Frame", nil, nameplate)
     frame:SetSize(db.size, db.size)
-    frame:SetPoint("BOTTOM", nameplate, "TOP", 0, 5)
+    frame:SetPoint("BOTTOM", nameplate, "TOP", 0, 5+db.nameplateOffsetY)
 
     local icon = frame:CreateTexture(nil, "ARTWORK")
     icon:SetTexCoord(0.1, 0.9, 0.1, 0.9)
@@ -210,6 +211,7 @@ function f.NAME_PLATE_UNIT_ADDED(self, event, unit)
         local iconFrame = np.NugTotemIcon
         iconFrame:Show()
         iconFrame:SetSize(db.size, db.size)
+        iconFrame:SetPoint("BOTTOM", np, "TOP", 0, 5+db.nameplateOffsetY)
 
         local totemData = totemNpcIDs[npcID]
         local spellID, duration = unpack(totemData)
@@ -271,10 +273,30 @@ f.Commands = {
     ["friendly"] = function(v)
         db.showFriendlyTotems = not db.showFriendlyTotems
     end,
+    ["cvarShowEnemyTotems"] = function(v)
+        if GetCVar("nameplateShowEnemyTotems") == "1" then
+            SetCVar("nameplateShowEnemyTotems", "0")
+        else
+            SetCVar("nameplateShowEnemyTotems", "1")
+        end
+    end,
+    ["cvarShowFriendlyTotems"] = function(v)
+        if GetCVar("nameplateShowFriendlyTotems") == "1" then
+            SetCVar("nameplateShowFriendlyTotems", "0")
+        else
+            SetCVar("nameplateShowFriendlyTotems", "1")
+        end
+    end,
     ["size"] = function(v)
         local newSize = tonumber(v)
         if newSize then
             db.size = newSize
+        end
+    end,
+    ["yoffset"] = function(v)
+        local yOffset = tonumber(v)
+        if yOffset then
+            db.nameplateOffsetY = yOffset
         end
     end,
 }
@@ -285,6 +307,9 @@ function f.SlashCmd(msg)
         "|cff00ffbb/nti cooldowncount|r",
         "|cff00ffbb/nti friendly|r",
         "|cff00ffbb/nti size 63|r",
+        "|cff00ffbb/nti yoffset 5|r",
+        "|cff00ffbb/nti cvarShowEnemyTotems|r",
+        "|cff00ffbb/nti cvarShowFriendlyTotems|r",
     }
 
     local k,v = string.match(msg, "([%w%+%-%=]+) ?(.*)")

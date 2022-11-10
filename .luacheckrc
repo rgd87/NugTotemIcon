@@ -132,4 +132,5 @@ globals = {
     "C_NamePlate",
     "GetSpellTexture",
     "UnitReaction",
+    "SetCVar",
 }
