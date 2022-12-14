@@ -83,8 +83,11 @@ if APILevel >= 8 then
         -- Warrior
         [119052] = { 236320, 15 }, -- War Banner
 
-        --Priest
+        -- Priest
         [101398] = { 211522, 12 }, -- Psyfiend
+
+        -- Warlock
+        [179193] = { 353601, 15 }, -- Fel Obelisk
     }
 elseif APILevel == 3 then
     totemNpcIDs = {
