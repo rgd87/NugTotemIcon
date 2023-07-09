@@ -88,6 +88,7 @@ if APILevel >= 8 then
 
         -- Warlock
         [179193] = { 353601, 15 }, -- Fel Obelisk
+        [107100] = { 201996, 20 }, -- Call Observer
     }
 elseif APILevel == 3 then
     totemNpcIDs = {
