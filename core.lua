@@ -91,39 +91,33 @@ if APILevel >= 8 then
         [107100] = { 201996, 20 }, -- Call Observer
     }
 elseif APILevel == 4 then
+    -- Added Spirit Link
+    -- Removed Ranks
+    -- Removed Sentry Totem, Totem of Wrath, Fire/Frost/Nature Resistance Totem
+    -- Wrath of Air now 5m
+    -- Magma now 1m
     totemNpcIDs = {
         -- [npcID] = { spellID, duration }
         [2630] = { 2484, 45 }, -- Earthbind
         [5925] = { 8177, 45 }, -- Grounding
-        [3968] = { 6495, 300 }, -- Sentry
         [15430] = { 2062, 120 }, -- Earth Elemental Totem
         [15439] = { 2894, 120 }, -- Fire Elemental Totem
-        [15447] = { 3738, 120 }, -- Wrath of Air Totem
+        [15447] = { 3738, 300 }, -- Wrath of Air Totem
         [5913] = { 8143, 300 }, -- Tremor
+        [53006] = { 98008, 6 }, -- Spirit Link
         [10467] = { 16190, 12 }, -- Mana Tide Totem
-        [5924] = { 54968, 300 } -- Cleansing Totem
-    }
-    local function addTotem(data, ...)
-        local numArgs = select("#",...)
-        for i=1, numArgs do
-            local npcID = select(i, ...)
-            totemNpcIDs[npcID] = data
-        end
-    end
+        [5924] = { 54968, 300 }, -- Cleansing Totem
 
-    addTotem({ 30706, 300 }, 17539, 30652, 30653, 30654) -- Totem of Wrath
-    addTotem({ 5675, 300 }, 3573, 7414, 7415, 7416, 15489, 31186, 31189, 31190) -- Mana Spring Totem
-    addTotem({ 8187, 20 }, 5929, 7464, 7465, 7466, 15484, 31166, 31167) -- Magma Totem
-    addTotem({ 3599, 60 }, 2523, 3902, 3903, 3904, 7400, 7402, 15480, 31162, 31164, 31165) -- Searing Totem
-    addTotem({ 5730, 15 }, 3579, 3911, 3912, 3913, 7398, 7399, 15478, 31120, 31121, 31122) -- Stoneclaw Totem
-    addTotem({ 8184, 300 }, 5927, 7424, 7425, 15487, 31169, 31170) -- Fire Resistance Totem
-    addTotem({ 8227, 300 }, 5950, 6012, 7423, 10557, 15485, 31132, 31133, 31158) -- Flametongue Totem
-    addTotem({ 8181, 300 }, 5926, 7412, 7413, 15486, 31171, 31172) -- Frost Resistance Totem
-    addTotem({ 10595, 300 }, 7467, 7468, 7469, 15490, 31173, 31174) -- Nature Resistance Totem
-    addTotem({ 8071, 300 }, 5873, 5919, 5920, 7366, 7367, 7368, 15470, 15474, 31175, 31176) -- Stoneskin Totem
-    addTotem({ 31634, 300 }, 5874, 5921, 5922, 7403, 15464, 15479, 30647, 31129) -- Strength of Earth
-    addTotem({ 8512, 300 }, 6112) -- Windfury Totem
-    addTotem({ 5394, 300 }, 3527, 3906, 3907, 3908, 3909, 15488, 31181, 31181, 31185) -- Healing Stream Totem
+        [3573] = { 5675, 300 }, -- Mana Spring Totem
+        [5929] = { 8187, 60 }, -- Magma Totem
+        [2523] = { 3599, 60 }, -- Searing Totem
+        [3579] = { 5730, 15 }, -- Stoneclaw Totem
+        [5950] = { 8227, 300 }, -- Flametongue Totem
+        [5873] = { 8071, 300 }, -- Stoneskin Totem
+        [5874] = { 31634, 300 }, -- Strength of Earth
+        [6112] = { 8512, 300 }, -- Windfury Totem
+        [3527] = { 5394, 300 }, -- Healing Stream Totem
+    }
 elseif APILevel == 3 then
     totemNpcIDs = {
         -- [npcID] = { spellID, duration }
