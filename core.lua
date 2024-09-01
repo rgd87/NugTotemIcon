@@ -22,6 +22,8 @@ local defaults = {
     nameplateOffsetY = 0,
 }
 
+local GetSpellTexture = C_Spell and C_Spell.GetSpellTexture or _G.GetSpellTexture
+
 local db
 
 -- /script SetCVar("nameplateShowFriendlyTotems", 1)

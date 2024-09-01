@@ -108,6 +108,7 @@ globals = {
     "Mixin",
 
     "GetBuildnfo",
+    "C_Spell",
     "CreateFrame",
     "IsPlayerSpell",
     "GetSpellInfo",
